@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Wilczura.Observability.Common.Host\Wilczura.Observability.Common.Host.csproj" />
+    <ProjectReference Include="..\Wilczura.Observability.Common.Web\Wilczura.Observability.Common.Web.csproj" />
+    <ProjectReference Include="..\Wilczura.Observability.Prices.Adapters.Controllers\Wilczura.Observability.Prices.Adapters.Controllers.csproj" />
+    <ProjectReference Include="..\Wilczura.Observability.Prices.Adapters.Postgres\Wilczura.Observability.Prices.Adapters.Postgres.csproj" />
+    <ProjectReference Include="..\Wilczura.Observability.Prices.Adapters.Products\Wilczura.Observability.Prices.Adapters.Products.csproj" />
+    <ProjectReference Include="..\Wilczura.Observability.Prices.Adapters.ServiceBus\Wilczura.Observability.Prices.Adapters.ServiceBus.csproj" />
+    <ProjectReference Include="..\Wilczura.Observability.Prices.Adapters.Stock\Wilczura.Observability.Prices.Adapters.Stock.csproj" />
+    <ProjectReference Include="..\Wilczura.Observability.Prices.Application\Wilczura.Observability.Prices.Application.csproj" />
+    <ProjectReference Include="..\Wilczura.Observability.Prices.Contract\Wilczura.Observability.Prices.Contract.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+</Project>

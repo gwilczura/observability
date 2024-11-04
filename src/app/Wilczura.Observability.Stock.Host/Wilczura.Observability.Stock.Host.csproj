@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Wilczura.Observability.Common.Host\Wilczura.Observability.Common.Host.csproj" />
+    <ProjectReference Include="..\Wilczura.Observability.Stock.Adapters.Controllers\Wilczura.Observability.Stock.Adapters.Controllers.csproj" />
+    <ProjectReference Include="..\Wilczura.Observability.Stock.Adapters.Postgres\Wilczura.Observability.Stock.Adapters.Postgres.csproj" />
+    <ProjectReference Include="..\Wilczura.Observability.Stock.Adapters.Products\Wilczura.Observability.Stock.Adapters.Products.csproj" />
+    <ProjectReference Include="..\Wilczura.Observability.Stock.Adapters.ServiceBus\Wilczura.Observability.Stock.Adapters.ServiceBus.csproj" />
+    <ProjectReference Include="..\Wilczura.Observability.Stock.Application\Wilczura.Observability.Stock.Application.csproj" />
+    <ProjectReference Include="..\Wilczura.Observability.Stock.Contract\Wilczura.Observability.Stock.Contract.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
+</Project>

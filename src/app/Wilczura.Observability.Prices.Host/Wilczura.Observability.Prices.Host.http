@@ -1,0 +1,6 @@
+@Wilczura.Observability.Prices.Host_HostAddress = http://localhost:5291
+
+GET {{Wilczura.Observability.Prices.Host_HostAddress}}/price/
+Accept: application/json
+
+###

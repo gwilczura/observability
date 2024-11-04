@@ -1,0 +1,6 @@
+@Wilczura.Observability.Bff.Host_HostAddress = http://localhost:5214
+
+GET {{Wilczura.Observability.Bff.Host_HostAddress}}/demo/
+Accept: application/json
+
+###

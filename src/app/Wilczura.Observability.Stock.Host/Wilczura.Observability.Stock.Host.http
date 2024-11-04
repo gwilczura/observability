@@ -1,0 +1,6 @@
+@Wilczura.Observability.Stock.Host_HostAddress = http://localhost:5187
+
+GET {{Wilczura.Observability.Stock.Host_HostAddress}}/stock/
+Accept: application/json
+
+###

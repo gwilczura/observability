@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MassTransit.Abstractions" Version="8.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Wilczura.Observability.Common.Consumers\Wilczura.Observability.Common.Consumers.csproj" />
+    <ProjectReference Include="..\Wilczura.Observability.Products.Client\Wilczura.Observability.Products.Client.csproj" />
+    <ProjectReference Include="..\Wilczura.Observability.Stock.Ports\Wilczura.Observability.Stock.Ports.csproj" />
+  </ItemGroup>
+
+</Project>
