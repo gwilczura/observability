@@ -8,6 +8,7 @@ This code is not production ready. It has been created for the purposue of demon
 # architecture
 
 System is build as presented on below diagram.
+UI is not included.
 
 ![System View](/resources/observability-system.png)
 
@@ -38,6 +39,11 @@ prices_client_secret = "prices_client_secret"
 products_client_secret = "products_client_secret"
 stock_client_secret = "stock_client_secret"
 domains_sql_admin_password = "password-for-postgres-admin"
+```
+
+to initialize run:
+```
+terraform init -backend-config="backend.conf"
 ```
 
 App Registration secrets are needed for applications to be able to access the key vault.
