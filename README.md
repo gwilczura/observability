@@ -66,3 +66,38 @@ Secrets stored in the Key Valt are:
 |ConnectionStrings--Stock                   | Stock         | DB Connection String |
 |ConnectionStrings--StockBus                | Stock         | Azure Service Bus ConnectionString |
 ||||
+
+## local setup
+
+Local development uses secrets from the KeyVault - so make sure to setup your account in Visual Studio.
+Secrets from Key Vault are also used for Entity Framework migration runs.
+
+## database
+
+### DB Init
+Solution is using PostgreSQL and infra script is creating a single Managed Postgres Server.
+
+You can use the script in `/src/sql` folder to init 3 databased dedicated to each service.
+
+Then provide the connection strings through the Key Vault.
+
+### Migrations
+
+For each app you can run migrations from the level of Solution file  - `/src/app' folder.
+
+To setup db:
+```
+dotnet ef database update --project Wilczura.Observability.Products.Adapters.Postgres --startup-project Wilczura.Observability.Products.Host
+
+dotnet ef database update --project Wilczura.Observability.Prices.Adapters.Postgres --startup-project Wilczura.Observability.Prices.Host
+
+dotnet ef database update --project Wilczura.Observability.Stock.Adapters.Postgres --startup-project Wilczura.Observability.Stock.Host
+```
+
+To create new migrations:
+```
+
+dotnet ef migrations add SomeNewMigration --project Wilczura.Observability.Products.Adapters.Postgres --startup-project Wilczura.Observability.Products.Host
+dotnet ef migrations add SomeNewMigration --project Wilczura.Observability.Prices.Adapters.Postgres --startup-project Wilczura.Observability.Prices.Host
+dotnet ef migrations add SomeNewMigration --project Wilczura.Observability.Stock.Adapters.Postgres --startup-project Wilczura.Observability.Stock.Host
+```
