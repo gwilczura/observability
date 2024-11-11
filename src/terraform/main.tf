@@ -166,10 +166,8 @@ resource "azurerm_postgresql_flexible_server" "domains_storage" {
   public_network_access_enabled = true
   administrator_login           = "sqladmin"
   administrator_password        = "${var.domains_sql_admin_password}"
-  zone                          = 3
 
   storage_tier = "P4"
-
   sku_name   = "B_Standard_B1ms"
 }
 

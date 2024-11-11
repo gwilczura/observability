@@ -22,10 +22,20 @@ Each of the four services is built in the same way using Ports and Adapters Arch
 
 Folder /src/terraform contains a simple terraform setup.
 It assumes that:
-1. each of the four web applications is using an App Registration
-2. there is a storage account for terraform state
+1. each of the four web applications is using an App Registration (created manually)
+2. there is a storage account and container already created for terraform state
 3. there is an key vault created outside of the terraform managed infra
 4. app registrations have access to secrets in that key vault.
+
+Azure integrated authentication is assumed for local setup.
+
+```
+az login
+az account list --output table
+az account set --subscription [subscription-id]
+```
+
+Your chosen subscrition should be selected as the default one.
 
 Terraform can be executed locally using a `terraform.tfvars` file like this:
 
@@ -55,14 +65,12 @@ Secrets stored in the Key Valt are:
 
 | Key | Service| Description |
 |-----|--------|-------------|
-|ElasticApm--SecretToken                    | Each          | Elastic Cloud Configuration            |
-|Logging--Elasticsearch--ShipTo--ApiKey     | Each          | Elastic Cloud Configuration            |
-|Logging--Elasticsearch--ShipTo--CloudId    | Each          | Elastic Cloud Configuration            |
-|Logging--Elasticsearch--ShipTo--Password   | Each          | Elastic Cloud Configuration            |
-|Logging--Elasticsearch--ShipTo--Username   | Each          | Elastic Cloud Configuration            |
-|Bff--ApiKey                                | LoadRunner    | ApiKey needed to access BFF            |
-|Bff--ServicePrincipal--ClientSecret        | BFF           | ClientSecret for BFF App Registration            |
-|Prices--ServicePrincipal--ClientSecret     | Prices        | ClientSecret for Prices App Registration            |
+|ElasticApm--SecretToken                    | Each          | Elastic APM Configuration - optional  |
+|Logging--Elasticsearch--ShipTo--ApiKey     | Each          | Elastic Logging Configuration         |
+|Logging--Elasticsearch--ShipTo--CloudId    | Each          | Elastic Loggin Configuration          |
+|Bff--ApiKey                                | LoadRunner    | ApiKey needed to access BFF           |
+|Bff--ServicePrincipal--ClientSecret        | BFF           | ClientSecret for BFF App Registration |
+|Prices--ServicePrincipal--ClientSecret     | Prices        | ClientSecret for Prices App Registration   |
 |ConnectionStrings--Prices                  | Prices        | DB Connection String |
 |ConnectionStrings--PricesBus               | Prices        | Azure Service Bus ConnectionString |
 |Products--ServicePrincipal--ClientSecret   | Products      | ClientSecret for Products App Registration |
@@ -72,6 +80,10 @@ Secrets stored in the Key Valt are:
 |ConnectionStrings--Stock                   | Stock         | DB Connection String |
 |ConnectionStrings--StockBus                | Stock         | Azure Service Bus ConnectionString |
 ||||
+
+To access key vault applications need to have Service Principal (App Registration) assigned.
+Most of the configuration is stored in appsettings.json file but the Secret is stored as environmental variable.
+Make sure you set it up correctly in terraform.
 
 ## local setup
 

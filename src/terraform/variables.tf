@@ -30,24 +30,29 @@ variable "sku_domains" {
 variable "bff_client_secret"{
   type        = string
   description = "secret for bff application"
+  sensitive   = true
 }
 
 variable "prices_client_secret"{
   type        = string
   description = "secret for prices application"
+  sensitive   = true
 }
 
 variable "products_client_secret"{
   type        = string
   description = "secret for products application"
+  sensitive   = true
 }
 
 variable "stock_client_secret"{
   type        = string
   description = "secret for stock application"
+  sensitive   = true
 }
 
 variable "domains_sql_admin_password"{
   type        = string
   description = "password for admin - sqladmin"
+  sensitive   = true
 }
