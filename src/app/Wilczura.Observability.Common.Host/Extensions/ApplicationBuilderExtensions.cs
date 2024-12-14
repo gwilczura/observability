@@ -35,6 +35,7 @@ public static class ApplicationBuilderExtensions
         AssemblyPart controllersAssemblyPart)
     {
         app.AddConfigurationFromKeyVault(configName);
+        app.AddConfigurationFromLocalConfig(configName);
         //TODO: SHOW P1 - AddAllElasticApm
         //app.Services.AddAllElasticApm();
 
@@ -123,6 +124,13 @@ public static class ApplicationBuilderExtensions
             {
                 ReloadInterval = TimeSpan.FromMinutes(5)
             });
+        return app;
+    }
+
+    public static IHostApplicationBuilder AddConfigurationFromLocalConfig(
+        this IHostApplicationBuilder app, string sectionName)
+    {
+        app.Configuration.AddJsonFile("appconfig.local.json", optional: true);
         return app;
     }
 

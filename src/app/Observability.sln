@@ -17,8 +17,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wilczura.Observability.Prod
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wilczura.Observability.Products.Client", "Wilczura.Observability.Products.Client\Wilczura.Observability.Products.Client.csproj", "{9EA41794-70DC-4A03-855B-E218F60BE2A4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wilczura.Observability.Common.Security", "Wilczura.Observability.Common.Security\Wilczura.Observability.Common.Security.csproj", "{74518EFD-0980-47AF-B4E9-0883ADA7C9FC}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wilczura.Observability.Bff.Host", "Wilczura.Observability.Bff.Host\Wilczura.Observability.Bff.Host.csproj", "{DDFA120B-7CD5-41C2-B747-F3B882ACBFC8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wilczura.Observability.Stock.Contract", "Wilczura.Observability.Stock.Contract\Wilczura.Observability.Stock.Contract.csproj", "{EC968BEE-71D2-4B2F-A9D0-7B62B043C7B5}"
@@ -131,10 +129,6 @@ Global
 		{9EA41794-70DC-4A03-855B-E218F60BE2A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9EA41794-70DC-4A03-855B-E218F60BE2A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9EA41794-70DC-4A03-855B-E218F60BE2A4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{74518EFD-0980-47AF-B4E9-0883ADA7C9FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{74518EFD-0980-47AF-B4E9-0883ADA7C9FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{74518EFD-0980-47AF-B4E9-0883ADA7C9FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{74518EFD-0980-47AF-B4E9-0883ADA7C9FC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DDFA120B-7CD5-41C2-B747-F3B882ACBFC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DDFA120B-7CD5-41C2-B747-F3B882ACBFC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DDFA120B-7CD5-41C2-B747-F3B882ACBFC8}.Release|Any CPU.ActiveCfg = Release|Any CPU

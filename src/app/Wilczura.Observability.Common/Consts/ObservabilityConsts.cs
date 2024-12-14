@@ -2,6 +2,10 @@
 
 public static class ObservabilityConsts
 {
+    public const string BearerAuthKey = "Bearer";
+
+    public const string HttpCLientSectionName = "HttpClient";
+
     public const string ServicePrincipalKey = "ServicePrincipal";
     public const string KeyVaultNameKey = "KeyVaultName";
 
