@@ -1,6 +1,6 @@
 ﻿using MassTransit;
 using Wilczura.Observability.Common.Host.Extensions;
-using Wilczura.Observability.Common.Producers;
+using Wilczura.Observability.Common.ServiceBus;
 using Wilczura.Observability.Prices.Adapters.Products.Consumers;
 using Wilczura.Observability.Prices.Adapters.Stock.Consumers;
 using Wilczura.Observability.Prices.Contract.Models;

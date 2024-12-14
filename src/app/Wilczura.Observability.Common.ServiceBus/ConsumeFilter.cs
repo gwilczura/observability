@@ -3,13 +3,13 @@ using Microsoft.Extensions.Logging;
 using Wilczura.Observability.Common.Consts;
 using Wilczura.Observability.Common.Logging;
 
-namespace Wilczura.Observability.Common.Producers;
+namespace Wilczura.Observability.Common.ServiceBus;
 
-public class PublishFilter<T> : IFilter<PublishContext<T>> where T : class
+public class ConsumeFilter<T> : IFilter<ConsumeContext<T>> where T : class
 {
-    private readonly ILogger<PublishFilter<T>> _logger;
+    private readonly ILogger<ConsumeFilter<T>> _logger;
 
-    public PublishFilter(ILogger<PublishFilter<T>> logger)
+    public ConsumeFilter(ILogger<ConsumeFilter<T>> logger)
     {
         _logger = logger;
     }
@@ -18,12 +18,12 @@ public class PublishFilter<T> : IFilter<PublishContext<T>> where T : class
     {
     }
 
-    // TODO: SHOW P3 - MassTransit filter based logging (Publish)
-    public async Task Send(PublishContext<T> context, IPipe<PublishContext<T>> next)
+    // TODO: SHOW P3 - MassTransit filter based logging (Send)
+    public async Task Send(ConsumeContext<T> context, IPipe<ConsumeContext<T>> next)
     {
         Exception? exception = null;
-        var message = "Message publish";
-        var activityName = "message-publish";
+        var message = "Message consume";
+        var activityName = "message-consume";
         var logInfo = new LogInfo(message, ObservabilityConsts.EventCategoryProcess);
         logInfo.Endpoint = $"{context.DestinationAddress?.LocalPath}";
         logInfo.EventAction = activityName;
