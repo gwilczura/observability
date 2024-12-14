@@ -5,7 +5,7 @@ using Wilczura.Observability.Common.Activities;
 using Wilczura.Observability.Common.Consts;
 using Wilczura.Observability.Common.Logging;
 
-namespace Wilczura.Observability.Common.Consumers
+namespace Wilczura.Observability.Common.ServiceBus
 {
     public class ConsumeObserver : IConsumeObserver
     {
