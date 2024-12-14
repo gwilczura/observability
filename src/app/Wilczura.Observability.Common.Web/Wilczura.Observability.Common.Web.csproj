@@ -12,7 +12,7 @@
     <PackageReference Include="Elastic.Apm.NetCoreAll" Version="1.30.0" />
     <PackageReference Include="Elastic.Extensions.Logging" Version="8.12.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
-    <PackageReference Include="Microsoft.Identity.Web" Version="3.2.2" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="3.4.0" />
   </ItemGroup>
 
   <ItemGroup>
