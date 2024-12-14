@@ -11,7 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Wilczura.Observability.Common.Consumers\Wilczura.Observability.Common.Consumers.csproj" />
     <ProjectReference Include="..\Wilczura.Observability.Prices.Ports\Wilczura.Observability.Prices.Ports.csproj" />
     <ProjectReference Include="..\Wilczura.Observability.Products.Client\Wilczura.Observability.Products.Client.csproj" />
   </ItemGroup>
