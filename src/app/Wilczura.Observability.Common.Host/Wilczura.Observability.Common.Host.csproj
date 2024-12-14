@@ -18,7 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Wilczura.Observability.Common.Client\Wilczura.Observability.Common.Client.csproj" />
     <ProjectReference Include="..\Wilczura.Observability.Common.Consumers\Wilczura.Observability.Common.Consumers.csproj" />
-    <ProjectReference Include="..\Wilczura.Observability.Common.Producers\Wilczura.Observability.Common.Producers.csproj" />
+    <ProjectReference Include="..\Wilczura.Observability.Common.ServiceBus\Wilczura.Observability.Common.ServiceBus.csproj" />
     <ProjectReference Include="..\Wilczura.Observability.Common.Web\Wilczura.Observability.Common.Web.csproj" />
     <ProjectReference Include="..\Wilczura.Observability.Common\Wilczura.Observability.Common.csproj" />
   </ItemGroup>

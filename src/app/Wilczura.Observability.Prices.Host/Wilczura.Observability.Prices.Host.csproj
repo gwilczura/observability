@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Wilczura.Observability.Common.Host\Wilczura.Observability.Common.Host.csproj" />
+    <ProjectReference Include="..\Wilczura.Observability.Common.ServiceBus\Wilczura.Observability.Common.ServiceBus.csproj" />
     <ProjectReference Include="..\Wilczura.Observability.Common.Web\Wilczura.Observability.Common.Web.csproj" />
     <ProjectReference Include="..\Wilczura.Observability.Prices.Adapters.Controllers\Wilczura.Observability.Prices.Adapters.Controllers.csproj" />
     <ProjectReference Include="..\Wilczura.Observability.Prices.Adapters.Postgres\Wilczura.Observability.Prices.Adapters.Postgres.csproj" />
