@@ -28,6 +28,7 @@ public static class MassTransitExtensions
                 config.UseCustomConsumeLogger(context);
                 config.UseSendFilter(typeof(SendFilter<>), context);
                 config.UsePublishFilter(typeof(PublishFilter<>), context);
+                config.UseConsumeFilter(typeof(ConsumeFilter<>), context);
                 config.DeployPublishTopology = true;
                 config.Message<PriceChanged>(pt =>
                 {

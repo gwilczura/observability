@@ -1,0 +1,1 @@
+dotnet ef migrations add $1 -v --project Wilczura.Observability.Products.Adapters.Postgres --startup-project Wilczura.Observability.Products.Host
