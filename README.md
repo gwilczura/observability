@@ -5,6 +5,12 @@ Sample .NET Project containing multiple services created to demonstrate observab
 
 This code is not production ready. It has been created for the purposue of demonstation of .NET and ELK integration.
 
+## assumptions
+
+1. You know how to work with ASP.NET and C#
+2. You know Azure (App Service, App Registration, Service Bus, Key Vault)
+3. You know Terraform
+
 # architecture
 
 System is build as presented on below diagram.
@@ -24,12 +30,13 @@ Each of the four services is built in the same way using Ports and Adapters Arch
 1. Visual Studio
 2. bash (can be git bash on Windows)
 3. terraform
-4. [psql](https://www.postgresql.org/docs/current/app-psql.html) (best added to path)
+4. [psql](https://www.postgresql.org/docs/current/app-psql.html) (client only, best added to path)
 5. Azure Account
     1. create 4 App Registrations - for each app service a dedicated one
-    2. create storage account and container for teffaform state
-    3. create Key Vault to store secret
-    4. grant yourself and the 4 App Registrations access to the secrets in the Key Vault
+    2. create resource group (I name it "admin-rg") and create in it:
+        1. storage account and container for teffaform state (check ```backend.conf``` for details)
+        2. Key Vault to store secrets
+    3. grant yourself and the 4 App Registrations access to the secrets in the Key Vault
 
 ## infrastructure
 
