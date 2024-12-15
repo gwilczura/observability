@@ -63,14 +63,6 @@ resource "azurerm_linux_web_app" "webapp_ui"{
   }
 }
 
-resource "azurerm_service_plan" "splan_publicapi"{
-  name                = "${var.application}-publicapi-plan"
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
-  os_type             = "Linux"
-  sku_name            = "${var.sku_publicapi}"
-}
-
 resource "azurerm_service_plan" "splan_domains_prices"{
   name                = "${var.application}-domains-prices-plan"
   resource_group_name = azurerm_resource_group.rg.name
@@ -167,6 +159,7 @@ resource "azurerm_postgresql_flexible_server" "domains_storage" {
   administrator_login           = "sqladmin"
   administrator_password        = "${var.domains_sql_admin_password}"
 
+  zone = "3"
   storage_tier = "P4"
   sku_name   = "B_Standard_B1ms"
 }
