@@ -9,6 +9,7 @@ This code is not production ready. It has been created for the purposue of demon
 
 System is build as presented on below diagram.
 UI is not included.
+Infrastructure is Azure Based.
 
 ![System View](/resources/observability-system.png)
 
@@ -17,6 +18,18 @@ Each of the four services is built in the same way using Ports and Adapters Arch
 ![Service View](/resources/observability-service.png)
 
 # setup
+
+## prerequisites
+
+1. Visual Studio
+2. bash (can be git bash on Windows)
+3. terraform
+4. [psql](https://www.postgresql.org/docs/current/app-psql.html) (best added to path)
+5. Azure Account
+    1. create 4 App Registrations - for each app service a dedicated one
+    2. create storage account and container for teffaform state
+    3. create Key Vault to store secret
+    4. grant yourself and the 4 App Registrations access to the secrets in the Key Vault
 
 ## infrastructure
 
@@ -57,8 +70,18 @@ terraform init -backend-config="backend.conf"
 ```
 
 App Registration secrets are needed for applications to be able to access the key vault.
+They are stored as environment variables.
 
 ## application configuration
+
+Applications are reading configuration in this order:
+
+1. Environment variables (applicable when deployed to Azure - secret from ENV grants access to KeyVault)
+2. Standard configuration files
+3. KeyVault - using secret from ENV on Azure or Visual Studio credentials on local debug.
+4. appsettings.local.json - custom config file, ignored by git for additional local overrides
+
+## KeyVault
 
 For simplicity all applications are using the same key vault (without App Configuration in the middle).
 Secrets stored in the Key Valt are:
@@ -88,7 +111,8 @@ Make sure you set it up correctly in terraform.
 ## local setup
 
 Local development uses secrets from the KeyVault - so make sure to setup your account in Visual Studio.
-Secrets from Key Vault are also used for Entity Framework migration runs.
+
+Secrets from Key Vault are also used for Entity Framework migration runs. Fot this you need `az login`
 
 ## database
 
@@ -97,25 +121,31 @@ Solution is using PostgreSQL and infra script is creating a single Managed Postg
 
 You can use the script in `/src/sql` folder to init 3 databased dedicated to each service.
 
+Script will concatenate substrings ```1```, ```2``` and ```3``` to the domain password provided.
+```
+./setup-db.sh '[db-host-name] '[sqladmin-password]' '[domain-password-prefix]'
+```
+
 Then provide the connection strings through the Key Vault.
 
 ### Migrations
 
-For each app you can run migrations from the level of Solution file  - `/src/app' folder.
+For each app you can run migrations from the level of Solution file  - `/src/app' folder using dedicated files.
 
 To setup db:
 ```
-dotnet ef database update --project Wilczura.Observability.Products.Adapters.Postgres --startup-project Wilczura.Observability.Products.Host
+db-prices-update.sh
 
-dotnet ef database update --project Wilczura.Observability.Prices.Adapters.Postgres --startup-project Wilczura.Observability.Prices.Host
+db-products-update.sh
 
-dotnet ef database update --project Wilczura.Observability.Stock.Adapters.Postgres --startup-project Wilczura.Observability.Stock.Host
+db-stock-update.sh
 ```
 
 To create new migrations:
 ```
+db-prices-add-migration.sh
 
-dotnet ef migrations add SomeNewMigration --project Wilczura.Observability.Products.Adapters.Postgres --startup-project Wilczura.Observability.Products.Host
-dotnet ef migrations add SomeNewMigration --project Wilczura.Observability.Prices.Adapters.Postgres --startup-project Wilczura.Observability.Prices.Host
-dotnet ef migrations add SomeNewMigration --project Wilczura.Observability.Stock.Adapters.Postgres --startup-project Wilczura.Observability.Stock.Host
+db-products-add-migration.sh
+
+db-stock-add-migration.sh
 ```

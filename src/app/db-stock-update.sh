@@ -1,0 +1,1 @@
+dotnet ef database update -v --project Wilczura.Observability.Stock.Adapters.Postgres --startup-project Wilczura.Observability.Stock.Host
