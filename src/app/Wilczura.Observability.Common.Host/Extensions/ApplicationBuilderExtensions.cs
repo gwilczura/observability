@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Http;
@@ -16,6 +17,7 @@ using System.Diagnostics;
 using Wilczura.Observability.Common.Activities;
 using Wilczura.Observability.Common.Client;
 using Wilczura.Observability.Common.Consts;
+using Wilczura.Observability.Common.Exceptions;
 using Wilczura.Observability.Common.Host.Logging;
 using Wilczura.Observability.Common.Host.Models;
 using Wilczura.Observability.Common.Models;
@@ -27,15 +29,46 @@ namespace Wilczura.Observability.Common.Host.Extensions;
 
 public static class ApplicationBuilderExtensions
 {
+    public static ILogger GetStartupLogger(this IHostApplicationBuilder app)
+    {
+        using var loggerFactory = LoggerFactory.Create(builder =>
+        {
+            builder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Information);
+            builder.AddConsole();
+        });
+        var logger = loggerFactory.CreateLogger<CustomActivityListener>();
+
+        if (logger == null)
+        {
+            throw new ObservabilityException(nameof(logger));
+        }
+        Console.WriteLine("Logger created");
+        return logger;
+    }
+
     public static IHostApplicationBuilder AddCustomHostServices(
         this IHostApplicationBuilder app,
         string configName,
         string mtActivitySourceName,
         AuthenticationType authenticationType,
-        AssemblyPart controllersAssemblyPart)
+        AssemblyPart controllersAssemblyPart,
+        ILogger? logger = null)
     {
-        app.AddConfigurationFromKeyVault(configName);
         app.AddConfigurationFromLocalConfig(configName);
+        app.AddConfigurationFromKeyVault(configName, logger);
+
+        foreach (var source in app.Configuration.Sources)
+        {
+            if(source is JsonConfigurationSource jsonSource)
+            {
+                logger?.LogInformation($"{typeof(JsonConfigurationSource).Name}: {jsonSource.Path}");
+            }
+            else
+            {
+                logger?.LogInformation(source.GetType().Name);
+            }
+        }
+
         //TODO: SHOW P1 - AddAllElasticApm
         //app.Services.AddAllElasticApm();
 
@@ -94,20 +127,9 @@ public static class ApplicationBuilderExtensions
         return app;
     }
 
-    public static IHostApplicationBuilder AddSharedServiceBus(
-        this IHostApplicationBuilder app)
-    {
-        // disabled as it does not work with Activity
-        // app.Services.AddConsumeObserver<ConsumeObserver>();
-        // app.Services.AddSendObserver<SendObserver>();
-        // app.Services.AddPublishObserver<PublishObserver>();
-
-        return app;
-    }
-
     // TODO: SHOW P9 - Add Azure Key Vault for configuration
     public static IHostApplicationBuilder AddConfigurationFromKeyVault(
-        this IHostApplicationBuilder app, string sectionName)
+        this IHostApplicationBuilder app, string sectionName, ILogger? logger = null)
     {
         var keyVaultName = app.Configuration[ObservabilityConsts.KeyVaultNameKey];
         var servicePrincipalSection = app.Configuration.GetSection(sectionName).GetSection(ObservabilityConsts.ServicePrincipalKey)!;
@@ -117,20 +139,29 @@ public static class ApplicationBuilderExtensions
             !string.IsNullOrWhiteSpace(options?.ClientSecret)
             ? new ClientSecretCredential(options!.TenantId, options.ClientId, options.ClientSecret)
             : new DefaultAzureCredential();
-        app.Configuration.AddAzureKeyVault(
-            new Uri($"https://{keyVaultName}.vault.azure.net/"),
-            credential,
-            new AzureKeyVaultConfigurationOptions
-            {
-                ReloadInterval = TimeSpan.FromMinutes(5)
-            });
+        logger?.LogInformation($"KeyVault: {keyVaultName}, {credential.GetType().Name}, {options?.ClientId}");
+        try
+        {
+            app.Configuration.AddAzureKeyVault(
+                new Uri($"https://{keyVaultName}.vault.azure.net/"),
+                credential,
+                new AzureKeyVaultConfigurationOptions
+                {
+                    ReloadInterval = TimeSpan.FromMinutes(5)
+                });
+        }
+        catch (Exception ex)
+        {
+            logger?.LogError($"KeyVault Failure: {ex.Message}");
+        }
+
         return app;
     }
 
     public static IHostApplicationBuilder AddConfigurationFromLocalConfig(
         this IHostApplicationBuilder app, string sectionName)
     {
-        app.Configuration.AddJsonFile("appconfig.local.json", optional: true);
+        app.Configuration.AddJsonFile("appsettings.local.json", optional: true);
         return app;
     }
 

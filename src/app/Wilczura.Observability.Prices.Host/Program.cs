@@ -14,15 +14,16 @@ var builder = WebApplication.CreateBuilder(args);
 var configName = "Prices";
 // Add services to the container.
 
+var logger = builder.GetStartupLogger();
 builder.AddCustomHostServices(
     configName, 
     DiagnosticHeaders.DefaultListenerName,
     AuthenticationType.Default,
-    new AssemblyPart(typeof(PriceController).Assembly));
+    new AssemblyPart(typeof(PriceController).Assembly),
+    logger);
 builder.AddPricesApplication();
 builder.AddPricesPostgres(string.Empty);
 builder.AddPricesServiceBus(string.Empty);
-builder.AddSharedServiceBus();
 builder.AddProductsClient();
 builder.AddStockClient();
 

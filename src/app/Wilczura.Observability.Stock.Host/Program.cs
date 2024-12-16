@@ -10,15 +10,16 @@ using Wilczura.Observability.Stock.Host.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 var configName = "Stock";
 // Add services to the container.
+var logger = builder.GetStartupLogger();
 builder.AddCustomHostServices(
     configName, 
     DiagnosticHeaders.DefaultListenerName,
     AuthenticationType.Default, 
-    new AssemblyPart(typeof(StockController).Assembly));
+    new AssemblyPart(typeof(StockController).Assembly),
+    logger);
 builder.AddStockApplication();
 builder.AddStockPostgres(string.Empty);
 builder.AddStockServiceBus(string.Empty);
-builder.AddSharedServiceBus();
 builder.AddProductsClient();
 
 var app = builder.Build();

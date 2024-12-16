@@ -85,10 +85,10 @@ Applications are reading configuration in this order:
 
 1. Environment variables (applicable when deployed to Azure - secret from ENV grants access to KeyVault)
 2. Standard configuration files
-3. KeyVault - using secret from ENV on Azure or Visual Studio credentials on local debug.
-4. appsettings.local.json - custom config file, ignored by git for additional local overrides
+3. appsettings.local.json - custom config file, ignored by git for additional local overrides
+4. KeyVault - using secret from ENV on Azure or Visual Studio credentials on local debug.
 
-## KeyVault
+### KeyVault
 
 For simplicity all applications are using the same key vault (without App Configuration in the middle).
 Secrets stored in the Key Valt are:
@@ -98,7 +98,7 @@ Secrets stored in the Key Valt are:
 |ElasticApm--SecretToken                    | Each          | Elastic APM Configuration - optional  |
 |Logging--Elasticsearch--ShipTo--ApiKey     | Each          | Elastic Logging Configuration         |
 |Logging--Elasticsearch--ShipTo--CloudId    | Each          | Elastic Loggin Configuration          |
-|Bff--ApiKey                                | LoadRunner    | ApiKey needed to access BFF           |
+|Bff--ApiKey                                | LoadRunner&BFF| ApiKey needed to access BFF           |
 |Bff--ServicePrincipal--ClientSecret        | BFF           | ClientSecret for BFF App Registration |
 |Prices--ServicePrincipal--ClientSecret     | Prices        | ClientSecret for Prices App Registration   |
 |ConnectionStrings--Prices                  | Prices        | DB Connection String |
@@ -115,9 +115,26 @@ To access key vault applications need to have Service Principal (App Registratio
 Most of the configuration is stored in appsettings.json file but the Secret is stored as environmental variable.
 Make sure you set it up correctly in terraform.
 
-## local setup
+App Registrations need to have ```Key Valult Secrets User``` permission.
+
+You need to have ```Key Vault Secrets Officer``` to add the secrets.
+
+To simplify setup you can fun ```setup-keyVault.sh``` from ```src\keyVault``` folder.
+
+```
+./setup-keyVault.sh obs-manual-kv
+```
+
+To access KeyVault you need to have KeyVaultName configured in the appsettings file or as environment variable.
+```
+  "KeyVaultName": "some-name"
+```
+
+### local setup
 
 Local development uses secrets from the KeyVault - so make sure to setup your account in Visual Studio.
+
+
 
 Secrets from Key Vault are also used for Entity Framework migration runs. Fot this you need `az login`
 
@@ -156,3 +173,7 @@ db-products-add-migration.sh
 
 db-stock-add-migration.sh
 ```
+
+## deployment
+
+Setup assumes manual deployment of each service from Visual Studio.

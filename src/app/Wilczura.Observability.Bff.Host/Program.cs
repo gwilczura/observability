@@ -10,11 +10,13 @@ using Wilczura.Observability.Stock.Client;
 var builder = WebApplication.CreateBuilder(args);
 var configName = "Bff";
 // Add services to the container.
+var logger = builder.GetStartupLogger();
 builder.AddCustomHostServices(
     configName, 
     mtActivitySourceName: string.Empty,
     AuthenticationType.ApiKey,
-    new AssemblyPart(typeof(DemoController).Assembly));
+    new AssemblyPart(typeof(DemoController).Assembly),
+    logger);
 builder.AddBffApplication();
 builder.AddPricesClient();
 builder.AddProductsClient();
