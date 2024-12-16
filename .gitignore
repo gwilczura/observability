@@ -6,6 +6,7 @@
 # project specific filters
 local_info/
 *.local.json
+*.local
 
 # User-specific files
 *.rsuser
