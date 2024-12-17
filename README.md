@@ -25,6 +25,8 @@ Each of the four services is built in the same way using Ports and Adapters Arch
 
 # setup
 
+This application can be deployed to Azure but it in prepared for manual deployment.
+
 ## prerequisites
 
 1. Visual Studio
@@ -134,8 +136,6 @@ To access KeyVault you need to have KeyVaultName configured in the appsettings f
 
 Local development uses secrets from the KeyVault - so make sure to setup your account in Visual Studio.
 
-
-
 Secrets from Key Vault are also used for Entity Framework migration runs. Fot this you need `az login`
 
 ## database
@@ -174,6 +174,46 @@ db-products-add-migration.sh
 db-stock-add-migration.sh
 ```
 
-## deployment
+# deployment
 
-Setup assumes manual deployment of each service from Visual Studio.
+1. Fulfill prerequisites
+2. deploy terraform
+3. setup the databases
+4. fill key vault
+5. run migrations for each domain
+6. (optional) run one of the services locally for test
+7. deploy 4 host applications to azure manally from Visual Studio.
+
+# debugging
+
+After deployment to Azure if you are struggling with running the app:
+1. navigate to your app service
+2. go to Development Tools -> SSH -> Go
+
+run:
+
+```
+cd..
+cd appsvctmp/volatile/logs/runtime/
+cat container.log
+```
+
+You should see something similar to:
+
+```
+2024-12-17T22:57:29.9016036Z Running user provided startup command...
+2024-12-17T22:57:42.3114420Z info: Wilczura.Observability.Common.Host.Logging.StartupLog[0] Logger created
+2024-12-17T22:57:42.3438827Z info: Wilczura.Observability.Common.Host.Logging.StartupLog[0] Wilczura.Observability.Products.Host | 1.0.7.0
+2024-12-17T22:57:43.6511059Z info: Wilczura.Observability.Common.Host.Logging.StartupLog[0] KeyVault: some-name, ClientSecretCredential, [guid]
+2024-12-17T22:58:00.8931094Z info: Wilczura.Observability.Common.Host.Logging.StartupLog[0] Source: MemoryConfigurationSource
+2024-12-17T22:58:00.9002993Z info: Wilczura.Observability.Common.Host.Logging.StartupLog[0] Source: EnvironmentVariablesConfigurationSource
+2024-12-17T22:58:00.9729656Z info: Wilczura.Observability.Common.Host.Logging.StartupLog[0] Source: MemoryConfigurationSource
+2024-12-17T22:58:00.9743047Z info: Wilczura.Observability.Common.Host.Logging.StartupLog[0] Source: EnvironmentVariablesConfigurationSource
+2024-12-17T22:58:00.9915376Z info: Wilczura.Observability.Common.Host.Logging.StartupLog[0] Source: JsonConfigurationSource, appsettings.json
+2024-12-17T22:58:00.9916072Z info: Wilczura.Observability.Common.Host.Logging.StartupLog[0] Source: JsonConfigurationSource, appsettings.Production.json
+2024-12-17T22:58:00.9916109Z info: Wilczura.Observability.Common.Host.Logging.StartupLog[0] Source: EnvironmentVariablesConfigurationSource
+2024-12-17T22:58:00.9916135Z info: Wilczura.Observability.Common.Host.Logging.StartupLog[0] Source: ChainedConfigurationSource
+2024-12-17T22:58:00.9916162Z info: Wilczura.Observability.Common.Host.Logging.StartupLog[0] Source: JsonConfigurationSource, appsettings.local.json
+2024-12-17T22:58:00.9916188Z info: Wilczura.Observability.Common.Host.Logging.StartupLog[0] Source: AzureKeyVaultConfigurationSource
+2024-12-17T22:58:01.8706128Z Console: Disabling default log providers. Enabling ELK.
+```
