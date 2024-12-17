@@ -33,16 +33,24 @@ public static class ApplicationBuilderExtensions
     {
         using var loggerFactory = LoggerFactory.Create(builder =>
         {
-            builder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Information);
-            builder.AddConsole();
+            builder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Debug);
+            builder.AddSimpleConsole(config =>
+            {
+                config.IncludeScopes = false;
+                config.SingleLine = true;
+            });
         });
-        var logger = loggerFactory.CreateLogger<CustomActivityListener>();
+
+        var logger = loggerFactory.CreateLogger<StartupLog>();
 
         if (logger == null)
         {
             throw new ObservabilityException(nameof(logger));
         }
-        Console.WriteLine("Logger created");
+
+        logger.LogInformation("Logger created");
+        logger.LogInformation("{systemInfo}", SystemInfo.GetInfo());
+
         return logger;
     }
 
@@ -57,17 +65,7 @@ public static class ApplicationBuilderExtensions
         app.AddConfigurationFromLocalConfig(configName);
         app.AddConfigurationFromKeyVault(configName, logger);
 
-        foreach (var source in app.Configuration.Sources)
-        {
-            if(source is JsonConfigurationSource jsonSource)
-            {
-                logger?.LogInformation($"{typeof(JsonConfigurationSource).Name}: {jsonSource.Path}");
-            }
-            else
-            {
-                logger?.LogInformation(source.GetType().Name);
-            }
-        }
+        LogConfigurationSources(app, logger);
 
         //TODO: SHOW P1 - AddAllElasticApm
         //app.Services.AddAllElasticApm();
@@ -88,6 +86,7 @@ public static class ApplicationBuilderExtensions
 
         app.AddPrincipal(configName);
         app.AddEntraIdAuthentication(configName);
+        logger.LogInformation("Disabling default log providers. Enabling ELK.");
         app.Logging.ClearProviders();
         // TODO: SHOW P1 - Add Elasticsearch "logger"
         app.Logging.AddElasticsearch(loggerOptions =>
@@ -127,6 +126,21 @@ public static class ApplicationBuilderExtensions
         return app;
     }
 
+    private static void LogConfigurationSources(IHostApplicationBuilder app, ILogger? logger)
+    {
+        foreach (var source in app.Configuration.Sources)
+        {
+            if (source is JsonConfigurationSource jsonSource)
+            {
+                logger?.LogInformation("Source: {name}, {path}", nameof(JsonConfigurationSource), jsonSource.Path);
+            }
+            else
+            {
+                logger?.LogInformation("Source: {name}", source.GetType().Name);
+            }
+        }
+    }
+
     // TODO: SHOW P9 - Add Azure Key Vault for configuration
     public static IHostApplicationBuilder AddConfigurationFromKeyVault(
         this IHostApplicationBuilder app, string sectionName, ILogger? logger = null)
@@ -135,11 +149,14 @@ public static class ApplicationBuilderExtensions
         var servicePrincipalSection = app.Configuration.GetSection(sectionName).GetSection(ObservabilityConsts.ServicePrincipalKey)!;
         var options = new ConfidentialClientApplicationOptions();
         servicePrincipalSection.Bind(options);
+
         TokenCredential credential =
             !string.IsNullOrWhiteSpace(options?.ClientSecret)
             ? new ClientSecretCredential(options!.TenantId, options.ClientId, options.ClientSecret)
             : new DefaultAzureCredential();
-        logger?.LogInformation($"KeyVault: {keyVaultName}, {credential.GetType().Name}, {options?.ClientId}");
+
+        logger?.LogInformation("KeyVault: {vaultName}, {name}, {clientId}", keyVaultName, credential.GetType().Name, options?.ClientId);
+
         try
         {
             app.Configuration.AddAzureKeyVault(
@@ -152,7 +169,7 @@ public static class ApplicationBuilderExtensions
         }
         catch (Exception ex)
         {
-            logger?.LogError($"KeyVault Failure: {ex.Message}");
+            logger?.LogError("KeyVault Failure: {message}", ex.Message);
         }
 
         return app;
@@ -198,6 +215,7 @@ public static class ApplicationBuilderExtensions
                 };
                 options.TokenValidationParameters.NameClaimType = ObservabilityConsts.ApplicationNameClaim;
             });
+
         return app;
     }
 }
