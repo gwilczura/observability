@@ -75,6 +75,11 @@ public class DemoService : IDemoService
         return await _priceRepository.UpsertPriceAsync(price, cancellationToken);
     }
 
+    public async Task<IEnumerable<ProductModel>> GetProductAsync(long? productId, CancellationToken cancellationToken)
+    {
+        return await _productRepository.GetProductsAsync(productId, cancellationToken);
+    }
+
     public async Task<IEnumerable<ProductModel>> UpsertProductAsync(ProductModel model, CancellationToken cancellationToken)
     {
         return await _productRepository.UpsertProductAsync(model, cancellationToken);
