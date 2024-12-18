@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Elastic.Apm;
+using Microsoft.Extensions.Logging;
 using Wilczura.Observability.Common.Consts;
 using Wilczura.Observability.Common.Logging;
 
@@ -21,37 +22,42 @@ public class CustomLoggingHttpMessageHandler : HttpClientHandler
         var message = "Http out";
         var activityName = "http-out";
         var logInfo = new LogInfo(message, ObservabilityConsts.EventCategoryWeb);
-        logInfo.HttpMethod = request.Method.Method;
-        logInfo.Endpoint = request.RequestUri?.LocalPath;
-        logInfo.EventAction = activityName;
-        var logScope = new LogScope(_logger, logInfo, LogLevel.Information, LogEvents.WebRequest, activityName: activityName);
-        try
+        Func<Task<HttpResponseMessage>> action = async () =>
         {
-            responseMessage = await base.SendAsync(request, cancellationToken);
-            return responseMessage;
-        }
-        catch (Exception ex)
-        {
-            exception = ex;
-            throw;
-        }
-        finally
-        {
-            if (exception != null)
+            logInfo.HttpMethod = request.Method.Method;
+            logInfo.Endpoint = request.RequestUri?.LocalPath;
+            logInfo.EventAction = activityName;
+            var logScope = new LogScope(_logger, logInfo, LogLevel.Information, LogEvents.WebRequest, activityName: activityName);
+            try
             {
-                logInfo.ApplyException(exception);
+                responseMessage = await base.SendAsync(request, cancellationToken);
+                return responseMessage;
             }
-            else if (responseMessage?.IsSuccessStatusCode == false)
+            catch (Exception ex)
             {
-                logInfo.EventReason = responseMessage.ReasonPhrase;
-                logInfo.EventOutcome = ObservabilityConsts.EventOutcomeFailure;
+                exception = ex;
+                throw;
             }
-            else
+            finally
             {
-                logInfo.EventOutcome = ObservabilityConsts.EventOutcomeSuccess;
-            }
+                if (exception != null)
+                {
+                    logInfo.ApplyException(exception);
+                }
+                else if (responseMessage?.IsSuccessStatusCode == false)
+                {
+                    logInfo.EventReason = responseMessage.ReasonPhrase;
+                    logInfo.EventOutcome = ObservabilityConsts.EventOutcomeFailure;
+                }
+                else
+                {
+                    logInfo.EventOutcome = ObservabilityConsts.EventOutcomeSuccess;
+                }
 
-            logScope.Dispose();
-        }
+                logScope.Dispose();
+            }
+        };
+
+        return await Agent.Tracer.CaptureTransaction(activityName, nameof(LogEvents.WebRequest), action);
     }
 }

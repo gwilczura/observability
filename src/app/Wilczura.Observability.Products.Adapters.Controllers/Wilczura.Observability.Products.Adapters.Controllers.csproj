@@ -9,6 +9,7 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Wilczura.Observability.Common\Wilczura.Observability.Common.csproj" />
     <ProjectReference Include="..\Wilczura.Observability.Products.Contract\Wilczura.Observability.Products.Contract.csproj" />
     <ProjectReference Include="..\Wilczura.Observability.Products.Ports\Wilczura.Observability.Products.Ports.csproj" />
   </ItemGroup>

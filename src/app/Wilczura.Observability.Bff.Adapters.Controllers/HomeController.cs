@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Wilczura.Observability.Common;
 
 namespace Wilczura.Observability.Bff.Adapters.Controllers;
 
@@ -11,6 +12,6 @@ public class HomeController : ControllerBase
     [AllowAnonymous]
     public ActionResult Get()
     {
-        return Ok();
+        return Ok(SystemInfo.GetInfo());
     }
 }

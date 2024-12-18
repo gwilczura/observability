@@ -10,6 +10,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Wilczura.Observability.Bff.Ports\Wilczura.Observability.Bff.Ports.csproj" />
+    <ProjectReference Include="..\Wilczura.Observability.Common\Wilczura.Observability.Common.csproj" />
   </ItemGroup>
 
 </Project>

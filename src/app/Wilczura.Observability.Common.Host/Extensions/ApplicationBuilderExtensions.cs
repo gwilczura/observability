@@ -1,6 +1,7 @@
 ﻿using Azure.Core;
 using Azure.Extensions.AspNetCore.Configuration.Secrets;
 using Azure.Identity;
+using Elastic.Apm;
 using Elastic.Extensions.Logging;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
@@ -68,7 +69,7 @@ public static class ApplicationBuilderExtensions
         LogConfigurationSources(app, logger);
 
         //TODO: SHOW P1 - AddAllElasticApm
-        //app.Services.AddAllElasticApm();
+        app.Services.AddElasticApm();
 
         //TODO: SHOW P1 - cross system compatibility
         // this is related with traceparent
@@ -86,7 +87,7 @@ public static class ApplicationBuilderExtensions
 
         app.AddPrincipal(configName);
         app.AddEntraIdAuthentication(configName);
-        logger.LogInformation("Disabling default log providers. Enabling ELK.");
+        logger?.LogInformation("Disabling default log providers. Enabling ELK.");
         app.Logging.ClearProviders();
         // TODO: SHOW P1 - Add Elasticsearch "logger"
         app.Logging.AddElasticsearch(loggerOptions =>

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Elastic.Apm;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Wilczura.Observability.Common.Consts;
 using Wilczura.Observability.Common.Logging;
@@ -23,42 +24,48 @@ public class LoggingMiddleware
         var message = "Http in";
         var activityName = "http-in";
         var logInfo = new LogInfo(message, ObservabilityConsts.EventCategoryWeb);
-        logInfo.EventAction = activityName;
-        var logScope = new LogScope(_logger, logInfo, LogLevel.Information, LogEvents.WebRequest, activityName: activityName);
-        logInfo.HttpMethod = context.Request.Method;
-        try
-        {
-            await _next(context);
-        }
-        catch(Exception ex)
-        {
-            exception = ex;
-            throw;
-        }
-        finally
-        {
-            logInfo.EventReason = $"HTTP Code {context.Response.StatusCode}";
 
-            if (exception != null)
+        Func<Task> action = async () =>
+        {
+            logInfo.EventAction = activityName;
+            var logScope = new LogScope(_logger, logInfo, LogLevel.Information, LogEvents.WebRequest, activityName: activityName);
+            logInfo.HttpMethod = context.Request.Method;
+            try
             {
-                logInfo.ApplyException(exception);
+                await _next(context);
             }
-            else if (context.Response.StatusCode >= 400)
+            catch (Exception ex)
             {
-                logInfo.EventOutcome = ObservabilityConsts.EventOutcomeFailure;
+                exception = ex;
+                throw;
             }
-            else if(context.Response.StatusCode >= 300)
+            finally
             {
-                logInfo.EventOutcome = ObservabilityConsts.EventOutcomeUnknown;
-            }
-            else
-            {
-                logInfo.EventOutcome = ObservabilityConsts.EventOutcomeSuccess;
-            }
+                logInfo.EventReason = $"HTTP Code {context.Response.StatusCode}";
 
-            logInfo.ApplyPrincipal(context.GetPrincipal());
+                if (exception != null)
+                {
+                    logInfo.ApplyException(exception);
+                }
+                else if (context.Response.StatusCode >= 400)
+                {
+                    logInfo.EventOutcome = ObservabilityConsts.EventOutcomeFailure;
+                }
+                else if (context.Response.StatusCode >= 300)
+                {
+                    logInfo.EventOutcome = ObservabilityConsts.EventOutcomeUnknown;
+                }
+                else
+                {
+                    logInfo.EventOutcome = ObservabilityConsts.EventOutcomeSuccess;
+                }
 
-            logScope.Dispose();
-        }
+                logInfo.ApplyPrincipal(context.GetPrincipal());
+
+                logScope.Dispose();
+            }
+        };
+
+        await Agent.Tracer.CaptureTransaction(activityName, nameof(LogEvents.WebRequest), action);
     }
 }
