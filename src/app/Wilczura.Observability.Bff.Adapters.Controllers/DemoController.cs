@@ -27,6 +27,14 @@ public class DemoController : ControllerBase
         return result;
     }
 
+    [HttpGet]
+    [Route("product")]
+    public async Task<IEnumerable<ProductModel>> GetProductAsync(long? productId, CancellationToken cancellationToken)
+    {
+        var result = await _demoService.GetProductAsync(productId, cancellationToken);
+        return result;
+    }
+
     [HttpPost]
     [Route("product")]
     public async Task<IEnumerable<ProductModel>> PostProductAsync(ProductModel product, CancellationToken cancellationToken)
