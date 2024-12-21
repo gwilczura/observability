@@ -68,32 +68,18 @@ public static class ApplicationBuilderExtensions
 
         LogConfigurationSources(app, logger);
 
-        //TODO: SHOW P1 - AddAllElasticApm
-        app.Services.AddElasticApm();
+        var config = app.Configuration.GetSection(configName);
+        app.Services.Configure<ObsOptions>(config);
+        var options = new ObsOptions();
+        config.Bind(options);
 
-        //TODO: SHOW P1 - cross system compatibility
-        // this is related with traceparent
-        Activity.DefaultIdFormat = ActivityIdFormat.W3C;
-        if (!string.IsNullOrWhiteSpace(mtActivitySourceName))
-        {
-            _ = new CustomActivityListener(mtActivitySourceName);
-        }
-        _ = new CustomActivityListener(ObservabilityConsts.DefaultListenerName);
+        app.SetupObservability(options, mtActivitySourceName, logger);
 
         var configRendomEx = app.Configuration.GetSection(RandomExceptionMiddlewareOptions.ConfigurationKey);
         app.Services.Configure<RandomExceptionMiddlewareOptions>(configRendomEx);
-        var config = app.Configuration.GetSection(configName);
-        app.Services.Configure<ObsOptions>(config);
 
         app.AddPrincipal(configName);
         app.AddEntraIdAuthentication(configName);
-        logger?.LogInformation("Disabling default log providers. Enabling ELK.");
-        app.Logging.ClearProviders();
-        // TODO: SHOW P1 - Add Elasticsearch "logger"
-        app.Logging.AddElasticsearch(loggerOptions =>
-        {
-            loggerOptions.MapCustom = CustomLogMapper.Map;
-        });
         app.Services.AddControllers(o =>
         {
             switch (authenticationType)
@@ -127,7 +113,39 @@ public static class ApplicationBuilderExtensions
         return app;
     }
 
-    private static void LogConfigurationSources(IHostApplicationBuilder app, ILogger? logger)
+    private static void SetupObservability(
+        this IHostApplicationBuilder app,
+        ObsOptions options,
+        string mtActivitySourceName,
+        ILogger? logger)
+    {
+        //TODO: SHOW P1 - AddAllElasticApm
+        if (options.EnableApm)
+        {
+            app.Services.AddElasticApm();
+        }
+
+        //TODO: SHOW P1 - cross system compatibility
+        // this is related with traceparent
+        Activity.DefaultIdFormat = ActivityIdFormat.W3C;
+        if (!string.IsNullOrWhiteSpace(mtActivitySourceName))
+        {
+            _ = new CustomActivityListener(mtActivitySourceName);
+        }
+        _ = new CustomActivityListener(ObservabilityConsts.DefaultListenerName);
+
+        logger?.LogInformation("Disabling default log providers. Enabling ELK.");
+        app.Logging.ClearProviders();
+        // TODO: SHOW P1 - Add Elasticsearch "logger"
+        app.Logging.AddElasticsearch(loggerOptions =>
+        {
+            loggerOptions.MapCustom = CustomLogMapper.Map;
+        });
+    }
+
+    private static void LogConfigurationSources(
+        IHostApplicationBuilder app,
+        ILogger? logger)
     {
         foreach (var source in app.Configuration.Sources)
         {
@@ -144,7 +162,9 @@ public static class ApplicationBuilderExtensions
 
     // TODO: SHOW P9 - Add Azure Key Vault for configuration
     public static IHostApplicationBuilder AddConfigurationFromKeyVault(
-        this IHostApplicationBuilder app, string sectionName, ILogger? logger = null)
+        this IHostApplicationBuilder app, 
+        string sectionName, 
+        ILogger? logger = null)
     {
         var keyVaultName = app.Configuration[ObservabilityConsts.KeyVaultNameKey];
         var servicePrincipalSection = app.Configuration.GetSection(sectionName).GetSection(ObservabilityConsts.ServicePrincipalKey)!;
@@ -176,16 +196,18 @@ public static class ApplicationBuilderExtensions
         return app;
     }
 
-    public static IHostApplicationBuilder AddConfigurationFromLocalConfig(
-        this IHostApplicationBuilder app, string sectionName)
+    private static IHostApplicationBuilder AddConfigurationFromLocalConfig(
+        this IHostApplicationBuilder app, 
+        string sectionName)
     {
         app.Configuration.AddJsonFile("appsettings.local.json", optional: true);
         return app;
     }
 
     // TODO: SHOW P9 - Add Principal
-    public static IHostApplicationBuilder AddPrincipal(
-        this IHostApplicationBuilder app, string sectionName)
+    private static IHostApplicationBuilder AddPrincipal(
+        this IHostApplicationBuilder app, 
+        string sectionName)
     {
         var servicePrincipalSection = app.Configuration.GetSection(sectionName).GetSection(ObservabilityConsts.ServicePrincipalKey)!;
         app.Services.Configure<ConfidentialClientApplicationOptions>(servicePrincipalSection);
@@ -194,8 +216,9 @@ public static class ApplicationBuilderExtensions
     }
 
     // TODO: SHOW P9 - Add Authentication
-    public static IHostApplicationBuilder AddEntraIdAuthentication(
-        this IHostApplicationBuilder app, string sectionName)
+    private static IHostApplicationBuilder AddEntraIdAuthentication(
+        this IHostApplicationBuilder app, 
+        string sectionName)
     {
         var servicePrincipalSection = app.Configuration.GetSection(sectionName).GetSection(ObservabilityConsts.ServicePrincipalKey)!;
         app.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
