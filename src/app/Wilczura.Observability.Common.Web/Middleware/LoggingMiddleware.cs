@@ -1,8 +1,12 @@
 ﻿using Elastic.Apm;
+using Elastic.Apm.Api;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.Net.Http.Headers;
+using System.Diagnostics;
 using Wilczura.Observability.Common.Consts;
 using Wilczura.Observability.Common.Logging;
+using Wilczura.Observability.Common.Models;
 using Wilczura.Observability.Common.Web.Extensions;
 
 namespace Wilczura.Observability.Common.Web.Middleware;
@@ -11,11 +15,13 @@ public class LoggingMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly ILogger<LoggingMiddleware> _logger;
+    private readonly ObsOptions _obsOptions;
 
-    public LoggingMiddleware(RequestDelegate next, ILogger<LoggingMiddleware> logger)
+    public LoggingMiddleware(RequestDelegate next, ILogger<LoggingMiddleware> logger, ObsOptions obsOptions)
     {
         _next = next;
         _logger = logger;
+        _obsOptions = obsOptions;
     }
 
     public async Task InvokeAsync(HttpContext context)
@@ -66,6 +72,22 @@ public class LoggingMiddleware
             }
         };
 
-        await Agent.Tracer.CaptureTransaction(activityName, nameof(LogEvents.WebRequest), action);
+        if (_obsOptions.EnableApm)
+        {
+            var containsTraceParentHeader =
+                context.Request.Headers.TryGetValue(HeaderNames.TraceParent, out var traceParentHeader);
+            DistributedTracingData? currentTraceData = null;
+
+            if (containsTraceParentHeader)
+            {
+                currentTraceData = DistributedTracingData.TryDeserializeFromString(traceParentHeader);
+            }
+
+            await Agent.Tracer.CaptureTransaction(activityName, nameof(LogEvents.WebRequest), action, currentTraceData);
+        }
+        else
+        {
+            await action();
+        }
     }
 }

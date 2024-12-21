@@ -2,16 +2,19 @@
 using Microsoft.Extensions.Logging;
 using Wilczura.Observability.Common.Consts;
 using Wilczura.Observability.Common.Logging;
+using Wilczura.Observability.Common.Models;
 
 namespace Wilczura.Observability.Common.Client;
 
 public class CustomLoggingHttpMessageHandler : HttpClientHandler
 {
     private readonly ILogger<CustomLoggingHttpMessageHandler> _logger;
+    private readonly ObsOptions _obsOptions;
 
-    public CustomLoggingHttpMessageHandler(ILogger<CustomLoggingHttpMessageHandler> logger)
+    public CustomLoggingHttpMessageHandler(ILogger<CustomLoggingHttpMessageHandler> logger, ObsOptions obsOptions)
     {
         _logger = logger;
+        _obsOptions = obsOptions;
     }
 
     //TODO: SHOW P3 - HttpMessageHandler Logging (HttpClient)
@@ -58,6 +61,13 @@ public class CustomLoggingHttpMessageHandler : HttpClientHandler
             }
         };
 
-        return await Agent.Tracer.CaptureTransaction(activityName, nameof(LogEvents.WebRequest), action);
+        if (_obsOptions.EnableApm)
+        {
+            return await Agent.Tracer.CaptureTransaction(activityName, nameof(LogEvents.WebRequest), action);
+        }
+        else
+        {
+            return await action();
+        }
     }
 }
