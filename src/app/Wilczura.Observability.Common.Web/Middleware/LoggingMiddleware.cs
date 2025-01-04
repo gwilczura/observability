@@ -2,8 +2,8 @@
 using Elastic.Apm.Api;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
-using System.Diagnostics;
 using Wilczura.Observability.Common.Consts;
 using Wilczura.Observability.Common.Logging;
 using Wilczura.Observability.Common.Models;
@@ -17,11 +17,14 @@ public class LoggingMiddleware
     private readonly ILogger<LoggingMiddleware> _logger;
     private readonly ObsOptions _obsOptions;
 
-    public LoggingMiddleware(RequestDelegate next, ILogger<LoggingMiddleware> logger, ObsOptions obsOptions)
+    public LoggingMiddleware(
+        RequestDelegate next, 
+        ILogger<LoggingMiddleware> logger, 
+        IOptions<ObsOptions> obsOptions)
     {
         _next = next;
         _logger = logger;
-        _obsOptions = obsOptions;
+        _obsOptions = obsOptions.Value;
     }
 
     public async Task InvokeAsync(HttpContext context)
