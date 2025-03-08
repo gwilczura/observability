@@ -171,6 +171,13 @@ resource "azurerm_postgresql_flexible_server_firewall_rule" "fr_azure" {
   end_ip_address   = "0.0.0.0"
 }
 
+resource "azurerm_postgresql_flexible_server_firewall_rule" "fr_local" {
+  name             = "local"
+  server_id        = azurerm_postgresql_flexible_server.domains_storage.id
+  start_ip_address = "X.X.X.X"
+  end_ip_address   = "X.X.X.X"
+}
+
 #################
 ## QUEUES
 #################

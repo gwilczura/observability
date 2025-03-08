@@ -1,10 +1,10 @@
 # execute like this:
-# ./setup-db.sh '[db-host-name] '[sqladmin-password]' '[domain-password-prefix]'
-PGHOST=$1
-PGDATABASE=postgres
-PGPORT=5432
-PGUSER=sqladmin
-PGPASSWORD=$2
+# ./setup-db.sh '[db-host-name]' '[sqladmin-password]' '[domain-password-prefix]'
+export PGHOST=$1
+export PGDATABASE=postgres
+export PGPORT=5432
+export PGUSER=sqladmin
+export PGPASSWORD=$2
 
 PRICES_PASS="${3}1";
 PRODUCTS_PASS="${3}2";

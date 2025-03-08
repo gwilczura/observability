@@ -73,9 +73,35 @@ stock_client_secret = "stock_client_secret"
 domains_sql_admin_password = "password-for-postgres-admin"
 ```
 
+and `backend.conf`:
+
+```
+resource_group_name="admin-rg"
+storage_account_name="[someprefix]tfstate" <== use correct name here
+container_name="[someprefix]tfstate"       <== and here
+key="terraform.tfstate"
+```
+
 to initialize run:
 ```
 terraform init -backend-config="backend.conf"
+```
+
+To access DB from your local machine you need to edit the main.tf to pass your local ip through the firewall.
+
+```
+resource "azurerm_postgresql_flexible_server_firewall_rule" "fr_local" {
+  name             = "local"
+  server_id        = azurerm_postgresql_flexible_server.domains_storage.id
+  start_ip_address = "your.ip.goes.here"
+  end_ip_address   = "your.ip.goes.here"
+}
+```
+
+and then of course
+```
+terraform plan
+terraform apply
 ```
 
 App Registration secrets are needed for applications to be able to access the key vault.
@@ -89,6 +115,14 @@ Applications are reading configuration in this order:
 2. Standard configuration files
 3. appsettings.local.json - custom config file, ignored by git for additional local overrides
 4. KeyVault - using secret from ENV on Azure or Visual Studio credentials on local debug.
+
+### AppSettings
+
+Make sure your `ServicePrincipal` setup is correct. It's important to understand the order in which configuration is being applied.
+
+If you have client secret in environmental variable, and then in app settings you keep it as empty string - then it will be an empty string.
+
+To avoid such override remove the field from JSON completely.
 
 ### KeyVault
 
@@ -132,6 +166,14 @@ To access KeyVault you need to have KeyVaultName configured in the appsettings f
   "KeyVaultName": "some-name"
 ```
 
+### elastic search API key
+what i usually strugle to find is - where to get elastic parameters from :)
+
+so the cloud id you can find on the [deployment management console](https://cloud.elastic.co/deployments/)
+but the Key you need to create through Kibana dashboard. 
+
+click `Open Kibana` from youd eployment screen -> Left menu -> Manage this deployment -> Stack Management -> Security -> API Keys
+
 ### local setup
 
 Local development uses secrets from the KeyVault - so make sure to setup your account in Visual Studio.
@@ -147,7 +189,7 @@ You can use the script in `/src/sql` folder to init 3 databased dedicated to eac
 
 Script will concatenate substrings ```1```, ```2``` and ```3``` to the domain password provided.
 ```
-./setup-db.sh '[db-host-name] '[sqladmin-password]' '[domain-password-prefix]'
+./setup-db.sh '[db-host-name]' '[sqladmin-password]' '[domain-password-prefix]'
 ```
 
 Then provide the connection strings through the Key Vault.
