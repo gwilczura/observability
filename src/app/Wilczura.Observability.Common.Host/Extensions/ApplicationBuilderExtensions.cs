@@ -119,13 +119,13 @@ public static class ApplicationBuilderExtensions
         string mtActivitySourceName,
         ILogger? logger)
     {
-        //TODO: SHOW P1 - AddAllElasticApm
+        //TODO: SHOW P1.2 - AddAllElasticApm
         if (options.EnableApm)
         {
             app.Services.AddElasticApm();
         }
 
-        //TODO: SHOW P1 - cross system compatibility
+        //TODO: SHOW P1.3 - cross system compatibility
         // this is related with traceparent
         Activity.DefaultIdFormat = ActivityIdFormat.W3C;
         if (!string.IsNullOrWhiteSpace(mtActivitySourceName))
@@ -136,7 +136,7 @@ public static class ApplicationBuilderExtensions
 
         logger?.LogInformation("Disabling default log providers. Enabling ELK.");
         app.Logging.ClearProviders();
-        // TODO: SHOW P1 - Add Elasticsearch "logger"
+        // TODO: SHOW P1.4 - Add Elasticsearch "logger"
         app.Logging.AddElasticsearch(loggerOptions =>
         {
             loggerOptions.MapCustom = CustomLogMapper.Map;

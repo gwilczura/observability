@@ -18,7 +18,7 @@ public class PublishFilter<T> : IFilter<PublishContext<T>> where T : class
     {
     }
 
-    // TODO: SHOW P3 - MassTransit filter based logging (Publish)
+    // TODO: SHOW P3.4 - MassTransit filter based logging (Publish)
     public async Task Send(PublishContext<T> context, IPipe<PublishContext<T>> next)
     {
         Exception? exception = null;
@@ -27,7 +27,7 @@ public class PublishFilter<T> : IFilter<PublishContext<T>> where T : class
         var logInfo = new LogInfo(message, ObservabilityConsts.EventCategoryProcess);
         logInfo.Endpoint = $"{context.DestinationAddress?.LocalPath}";
         logInfo.EventAction = activityName;
-        var logScope = new LogScope(_logger, logInfo, LogLevel.Information, LogEvents.WebRequest, activityName: activityName);
+        var logScope = new LogScope(_logger, logInfo, LogLevel.Information, LogEvents.PublishMessage, activityName: activityName);
         try
         {
             await next.Send(context);

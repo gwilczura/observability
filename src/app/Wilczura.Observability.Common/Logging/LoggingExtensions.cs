@@ -6,11 +6,6 @@ namespace Wilczura.Observability.Common.Logging;
 
 public static class LoggingExtensions
 {
-    // TODO: SHOW P2 - custom log message formatter
-    private static string MessageFormatter<T>(T state, Exception? exception)
-    {
-        return JsonSerializer.Serialize(state);
-    }
 
     public static void LogInformation(this ILogger logger, string message, EventId? eventId = null)
     {
@@ -25,5 +20,11 @@ public static class LoggingExtensions
     public static void Log(this ILogger logger, LogLevel logLevel, LogInfo logInfo, EventId? eventId = null)
     {
         logger.Log(logLevel, eventId ?? LogEvents.Custom, logInfo, null, MessageFormatter<LogInfo>);
+    }
+
+    // TODO: SHOW P2.4 - custom log message formatter
+    private static string MessageFormatter<T>(T state, Exception? exception)
+    {
+        return JsonSerializer.Serialize(state);
     }
 }

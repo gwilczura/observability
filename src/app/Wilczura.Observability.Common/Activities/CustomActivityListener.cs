@@ -7,7 +7,7 @@ public class CustomActivityListener : IDisposable
     private readonly string _activityName;
     private readonly ActivityListener _listener;
 
-    // TODO: SHOW P1 - ActivityListener - required by ActivitySource.Create()
+    // TODO: SHOW P1.1 - ActivityListener - required by ActivitySource.Create()
     // trivia - new Activity() works fine without it
     public CustomActivityListener(string activitySourceName)
     {

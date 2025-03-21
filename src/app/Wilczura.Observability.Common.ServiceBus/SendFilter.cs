@@ -18,7 +18,7 @@ public class SendFilter<T> : IFilter<SendContext<T>> where T : class
     {
     }
 
-    // TODO: SHOW P3 - MassTransit filter based logging (Send)
+    // TODO: SHOW P3.5 - MassTransit filter based logging (Send)
     public async Task Send(SendContext<T> context, IPipe<SendContext<T>> next)
     {
         Exception? exception = null;
@@ -27,7 +27,7 @@ public class SendFilter<T> : IFilter<SendContext<T>> where T : class
         var logInfo = new LogInfo(message, ObservabilityConsts.EventCategoryProcess);
         logInfo.Endpoint = $"{context.DestinationAddress?.LocalPath}";
         logInfo.EventAction = activityName;
-        var logScope = new LogScope(_logger, logInfo, LogLevel.Information, LogEvents.WebRequest, activityName: activityName);
+        var logScope = new LogScope(_logger, logInfo, LogLevel.Information, LogEvents.SendMessage, activityName: activityName);
         try
         {
             await next.Send(context);

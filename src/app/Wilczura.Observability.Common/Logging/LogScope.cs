@@ -4,6 +4,8 @@ using Wilczura.Observability.Common.Activities;
 
 namespace Wilczura.Observability.Common.Logging;
 
+
+// TODO: SHOW P2.1 - LogScope
 public class LogScope : IDisposable
 {
     private readonly ILogger _logger;
@@ -25,7 +27,7 @@ public class LogScope : IDisposable
         _stopwatch.Start();
         if(activityName != null)
         {
-            // TODO: SHOW P2 - LogScope and CustomActivitySource
+            // TODO: SHOW P2.2 - LogScope and CustomActivitySource
             _activity = CustomActivitySource.Source.Value.StartActivity(activityName, ActivityKind.Internal);
         }
         _logger = logger;
@@ -43,6 +45,7 @@ public class LogScope : IDisposable
         {
             _activity.SetEndTime(DateTime.UtcNow);
         }
+        // TODO: SHOW P2.3 - how are logs handled
         _logger.Log(_level, _logInfo, _eventId);
         if(_activity != null)
         {

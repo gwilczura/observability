@@ -172,7 +172,7 @@ what i usually strugle to find is - where to get elastic parameters from :)
 so the cloud id you can find on the [deployment management console](https://cloud.elastic.co/deployments/)
 but the Key you need to create through Kibana dashboard. 
 
-click `Open Kibana` from youd eployment screen -> Left menu -> Manage this deployment -> Stack Management -> Security -> API Keys
+click `Open Kibana` from youd eployment screen -> Left menu -> Managementt -> Stack Management -> Security -> API Keys
 
 ### local setup
 

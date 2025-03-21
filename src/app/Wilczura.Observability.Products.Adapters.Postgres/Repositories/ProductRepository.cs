@@ -49,6 +49,6 @@ public class ProductRepository : IProductRepository
         model.ProductId = entity.ProductId;
         model.Name = entity.Name;
 
-        return new[] { model };
+        return [model];
     }
 }

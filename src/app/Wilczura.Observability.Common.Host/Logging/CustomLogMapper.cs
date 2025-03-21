@@ -16,7 +16,9 @@ public static class CustomLogMapper
         UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow
     };
 
-    // TODO: SHOW P2 - map LogInfo to LogEvent
+    // TODO: SHOW P2.5 - map LogInfo to LogEvent
+    // Log Event is populated with only some data
+    // Here we use the LogInfo to add more data to Log Event 
     // https://github.com/elastic/ecs-dotnet/blob/main/src/Elastic.Extensions.Logging/README.md#tracing-fields
     // https://github.com/elastic/ecs-dotnet/blob/main/src/Elastic.Extensions.Logging/ElasticsearchLogger.cs
     // https://github.com/elastic/ecs-dotnet/blob/main/src/Elastic.CommonSchema/EcsDocument.cs

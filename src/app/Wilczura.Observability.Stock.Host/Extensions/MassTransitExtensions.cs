@@ -22,7 +22,6 @@ public static class MassTransitExtensions
             c.UsingAzureServiceBus((context, config) =>
             {
                 config.Host(section.GetConnectionString("stockbus"));
-                config.UseCustomConsumeLogger(context);
                 config.UseSendFilter(typeof(SendFilter<>), context);
                 config.UsePublishFilter(typeof(PublishFilter<>), context);
                 config.UseConsumeFilter(typeof(ConsumeFilter<>), context);

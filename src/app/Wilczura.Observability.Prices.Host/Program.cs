@@ -9,6 +9,10 @@ using Wilczura.Observability.Products.Client;
 using Wilczura.Observability.Stock.Client;
 
 // TODO: SHOW P0 - Show Project Structure
+// Common
+// Domains
+// Bff
+// LoadRunner
 
 var builder = WebApplication.CreateBuilder(args);
 var configName = "Prices";

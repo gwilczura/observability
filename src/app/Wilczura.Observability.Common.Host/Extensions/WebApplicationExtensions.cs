@@ -7,7 +7,7 @@ public static class WebApplicationExtensions
 {
     public static WebApplication UseObservabilityDefaults(this WebApplication app)
     {
-        // TODO: SHOW P9 - use middleware
+        // TODO: SHOW P4.3 - use middleware
         app.UseRequestLogging();
         app.UseHttpsRedirection();
         app.UseRandomException();
@@ -19,14 +19,14 @@ public static class WebApplicationExtensions
         return app;
     }
 
-    // TODO: SHOW P5 - Use Random Exception
+    // TODO: SHOW P4.2 - Use Random Exception
     public static IApplicationBuilder UseRandomException(
         this IApplicationBuilder builder)
     {
         return builder.UseMiddleware<RandomExceptionMiddleware>();
     }
 
-    // TODO: SHOW P3 - Use Request Logging (ASP.NET)
+    // TODO: SHOW P3.1 - Use Request Logging (ASP.NET)
     public static IApplicationBuilder UseRequestLogging(
         this IApplicationBuilder builder)
     {

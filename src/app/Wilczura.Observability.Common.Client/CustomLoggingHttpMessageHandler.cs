@@ -17,7 +17,7 @@ public class CustomLoggingHttpMessageHandler : HttpClientHandler
         _obsOptions = obsOptions;
     }
 
-    //TODO: SHOW P3 - HttpMessageHandler Logging (HttpClient)
+    //TODO: SHOW P3.2 - HttpMessageHandler Logging (HttpClient)
     protected async override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
         Exception? exception = null;
