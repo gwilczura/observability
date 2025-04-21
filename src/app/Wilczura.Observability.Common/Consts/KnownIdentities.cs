@@ -2,6 +2,7 @@
 
 public static class KnownIdentities
 {
+    // this is a hack :)
     public static readonly Dictionary<string, string> IdentityNames = new()
     {
         { "85fba9bf-3c86-45ea-8f92-419f4a18a2c3","prices" },

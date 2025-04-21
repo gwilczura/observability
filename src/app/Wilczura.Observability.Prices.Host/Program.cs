@@ -8,7 +8,7 @@ using Wilczura.Observability.Prices.Host.Extensions;
 using Wilczura.Observability.Products.Client;
 using Wilczura.Observability.Stock.Client;
 
-// TODO: SHOW P0 - Show Project Structure
+// TODO: SHOW P0.2 - Show Project Structure
 // Common
 // Domains
 // Bff
