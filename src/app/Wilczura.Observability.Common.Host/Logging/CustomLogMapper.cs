@@ -17,6 +17,7 @@ public static class CustomLogMapper
     public static void Map(LogEvent logEvent)
     {
 
+        // LogTemplateProperties
         logEvent.Agent ??= new Agent();
         logEvent.Agent.Name = "Wilczura";
 

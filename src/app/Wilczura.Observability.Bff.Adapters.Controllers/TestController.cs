@@ -26,7 +26,6 @@ public class TestController : ControllerBase
     {
         // TODO: SHOW P1.5 - Test Controller - example logs
 
-        //
         // base logger method uses "formatter"
         string formatter(LogInfo info, Exception? exception)
         {

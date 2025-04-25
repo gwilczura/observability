@@ -14,6 +14,7 @@ public class LogScope : IDisposable
     private readonly LogLevel _level;
     private readonly EventId? _eventId;
     private readonly Activity? _activity;
+    private readonly string _action;
 
     public LogInfo LogInfo { get {  return _logInfo; } }
 
@@ -24,6 +25,8 @@ public class LogScope : IDisposable
         EventId? eventId = null,
         string? activityName = null)
     {
+        _action = logInfo.EventAction ?? "unknown";
+        logInfo.EventAction = $"{_action}-begin";
         _stopwatch.Start();
         if(activityName != null)
         {
@@ -34,6 +37,7 @@ public class LogScope : IDisposable
         _logInfo = logInfo;
         _level = (logLevel ?? LogLevel.Information);
         _eventId = eventId;
+        _logger.Log(_level, _logInfo, _eventId);
     }
 
 
@@ -45,6 +49,8 @@ public class LogScope : IDisposable
         {
             _activity.SetEndTime(DateTime.UtcNow);
         }
+
+        _logInfo.EventAction = $"{_action}-end";
         // TODO: SHOW P2.3 - how are logs handled
         _logger.Log(_level, _logInfo, _eventId);
         if(_activity != null)
