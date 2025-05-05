@@ -16,7 +16,7 @@ public class LogInfo : Dictionary<string, object>
     {   
         get
         {
-            TryGetValue(eventDurationKey, out object? message);
+            TryGetValue(messageKey, out object? message);
             return message != null ? (string)message : string.Empty;
         }
         set

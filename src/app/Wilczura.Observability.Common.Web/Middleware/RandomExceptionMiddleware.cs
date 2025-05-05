@@ -18,8 +18,8 @@ public class RandomExceptionMiddleware
 
     public async Task InvokeAsync(HttpContext context, IOptionsSnapshot<RandomExceptionMiddlewareOptions> optionsSnapshot)
     {
-        string[] ignorePaths = [string.Empty, "/"];
-        if(!ignorePaths.Contains(context.Request.Path.Value))
+        string[] ignorePaths = [string.Empty, "/", "health"];
+        if(!ignorePaths.Contains(context.Request.Path.Value?.ToLowerInvariant()))
         {
             // options snapshot generates new value with each request - allows change without service restart
             var rate = double.Min(1, optionsSnapshot?.Value?.Rate ?? 0);

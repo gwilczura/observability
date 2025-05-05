@@ -23,7 +23,8 @@ public class StockReplenishingWorker : BackgroundService
             try
             {
                 var result = await _bffHttpClient.GetStockAndPriceAsync(null, stoppingToken);
-                foreach (var item in result.Where(a => a.StockItemId != null && a.Quantity != null && a.Quantity < 20))
+                foreach (var item in result.Where(a => a.StockItemId != null && a.Quantity != null && a.Quantity < 20)
+                    .OrderByDescending(a => a.ProductId))
                 {
                     var nextRandom = _random.Next(9);
                     var quantity = 100 * (nextRandom + 1);

@@ -18,11 +18,13 @@ public class StockInitializationWorker : BackgroundService
         var secondsDely = 5;
         while (!stoppingToken.IsCancellationRequested)
         {
+            long productId = 0;
             try
             {
                 var result = await _bffHttpClient.GetStockAndPriceAsync(null, stoppingToken);
-                foreach (var item in result.Where(a=> a.Quantity == null))
+                foreach (var item in result.Where(a=> a.Quantity == null).OrderByDescending(a=>a.ProductId))
                 {
+                    productId = item.ProductId;
                     var upsertResult = await _bffHttpClient.UpsertStockItemAsync(new StockItemModel
                     {
                         ProductId = item.ProductId,
@@ -34,7 +36,7 @@ public class StockInitializationWorker : BackgroundService
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"stock-init: {ex.Message}");
+                Console.WriteLine($"stock-init: product-id:{productId} | {ex.Message}");
             }
 
             await Task.Delay(1000 * secondsDely);

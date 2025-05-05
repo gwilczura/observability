@@ -75,7 +75,7 @@ public static class ApplicationBuilderExtensions
 
         app.SetupObservability(options, mtActivitySourceName, logger);
 
-        var configRendomEx = app.Configuration.GetSection(RandomExceptionMiddlewareOptions.ConfigurationKey);
+        var configRendomEx = config.GetSection(RandomExceptionMiddlewareOptions.ConfigurationKey);
         app.Services.Configure<RandomExceptionMiddlewareOptions>(configRendomEx);
 
         app.AddPrincipal(configName);
@@ -122,6 +122,7 @@ public static class ApplicationBuilderExtensions
         //TODO: SHOW P1.2 - AddAllElasticApm
         if (options.EnableApm)
         {
+            logger?.LogInformation("APM Enabled.");
             app.Services.AddElasticApm();
         }
 
